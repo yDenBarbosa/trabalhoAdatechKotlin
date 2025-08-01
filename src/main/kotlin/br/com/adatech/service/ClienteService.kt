@@ -2,11 +2,14 @@ package br.com.adatech.service
 
 import br.com.adatech.dto.ClienteRequestDTO
 import br.com.adatech.dto.ClienteResponseDTO
+import br.com.adatech.dto.DepositoResponseDTO
 import br.com.adatech.dto.SaldoResponseDTO
 import br.com.adatech.model.Cliente
 import br.com.adatech.repository.ClienteRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -15,12 +18,10 @@ class ClienteService(
 ) {
 
     fun cadastrarCliente(request: ClienteRequestDTO): ClienteResponseDTO {
-        // Validar se CPF já existe
         if (clienteRepository.existsByCpf(request.cpf)) {
             throw IllegalArgumentException("CPF já cadastrado no sistema")
         }
 
-        // Validar se email já existe
         if (clienteRepository.existsByEmail(request.email)) {
             throw IllegalArgumentException("E-mail já cadastrado no sistema")
         }
@@ -38,9 +39,8 @@ class ClienteService(
     }
 
     @Transactional(readOnly = true)
-    fun buscarTodosClientes(): List<ClienteResponseDTO> {
-        return clienteRepository.findAll().map { it.toResponseDTO() }
-    }
+    fun buscarTodosClientes(): List<ClienteResponseDTO> =
+        clienteRepository.findAll().map { it.toResponseDTO() }
 
     @Transactional(readOnly = true)
     fun buscarClientePorId(id: Long): ClienteResponseDTO {
@@ -58,6 +58,26 @@ class ClienteService(
             clienteId = cliente.id!!,
             nomeCompleto = cliente.nomeCompleto,
             saldo = cliente.saldo
+        )
+    }
+
+    fun realizarDeposito(clienteId: Long, valor: BigDecimal): DepositoResponseDTO {
+        if (valor <= BigDecimal.ZERO) {
+            throw IllegalArgumentException("Valor do depósito deve ser maior que zero")
+        }
+
+        val cliente = clienteRepository.findById(clienteId)
+            .orElseThrow { NoSuchElementException("Cliente não encontrado com ID: $clienteId") }
+
+        val novoSaldo = cliente.saldo + valor
+        val clienteAtualizado = cliente.copy(saldo = novoSaldo)
+        clienteRepository.save(clienteAtualizado)
+
+        return DepositoResponseDTO(
+            clienteId = clienteAtualizado.id!!,
+            nomeCompleto = clienteAtualizado.nomeCompleto,
+            saldoAtualizado = novoSaldo,
+            dataHoraDeposito = LocalDateTime.now()
         )
     }
 

@@ -2,6 +2,8 @@ package br.com.adatech.controller
 
 import br.com.adatech.dto.ClienteRequestDTO
 import br.com.adatech.dto.ClienteResponseDTO
+import br.com.adatech.dto.DepositoRequestDTO
+import br.com.adatech.dto.DepositoResponseDTO
 import br.com.adatech.dto.SaldoResponseDTO
 import br.com.adatech.service.ClienteService
 import jakarta.validation.Valid
@@ -37,5 +39,14 @@ class ClienteController(
     fun consultarSaldo(@PathVariable id: Long): ResponseEntity<SaldoResponseDTO> {
         val saldo = clienteService.consultarSaldo(id)
         return ResponseEntity.ok(saldo)
+    }
+
+    @PatchMapping("/{id}/deposito")
+    fun depositarValor(
+        @PathVariable id: Long,
+        @Valid @RequestBody depositoRequest: DepositoRequestDTO
+    ): ResponseEntity<DepositoResponseDTO> {
+        val resultado = clienteService.realizarDeposito(id, depositoRequest.valor)
+        return ResponseEntity.ok(resultado)
     }
 }
