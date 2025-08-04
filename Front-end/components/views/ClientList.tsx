@@ -18,6 +18,7 @@ const ClientList: React.FC = () => {
             setIsLoading(true);
             try {
                 const data = await api.getClients();
+                console.log('data', data)
                 setClients(data);
             } catch (error) {
                 console.error("Failed to fetch clients:", error);
@@ -59,10 +60,10 @@ const ClientList: React.FC = () => {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {clients.map((client) => (
                                 <tr key={client.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{client.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{client.nomeCompleto}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.cpf}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.email}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <Link to={`/clients/${client.id}`} className="text-blue-600 hover:text-blue-900">
                                             Detalhes

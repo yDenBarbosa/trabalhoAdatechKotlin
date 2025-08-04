@@ -83,7 +83,7 @@ const ClientDetails: React.FC = () => {
                         </div>
                         <div className="mt-4 md:mt-0 text-left md:text-right">
                             <p className="text-lg text-gray-500">Saldo Atual</p>
-                            <p className="text-4xl font-extrabold text-green-600">{client.balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            <p className="text-4xl font-extrabold text-green-600">{client.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         </div>
                     </div>
 
@@ -92,11 +92,11 @@ const ClientDetails: React.FC = () => {
                             <h3 className="font-semibold text-gray-900">Informações de Contato</h3>
                             <p className="text-gray-600"><strong>CPF:</strong> {client.cpf}</p>
                             <p className="text-gray-600"><strong>E-mail:</strong> {client.email}</p>
-                            <p className="text-gray-600"><strong>Telefone:</strong> {client.phone}</p>
+                            <p className="text-gray-600"><strong>Telefone:</strong> {client.telefone}</p>
                         </div>
                          <div>
                             <h3 className="font-semibold text-gray-900">Outras Informações</h3>
-                            <p className="text-gray-600"><strong>Cliente desde:</strong> {new Date(client.createdAt).toLocaleDateString('pt-BR')}</p>
+                            <p className="text-gray-600"><strong>Cliente desde:</strong> {new Date(client.dataCadastro).toLocaleDateString('pt-BR')}</p>
                         </div>
                     </div>
 

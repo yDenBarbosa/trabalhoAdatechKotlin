@@ -1,17 +1,16 @@
 
 export interface Client {
-  id: string;
-  name: string;
+  nomeCompleto: string;
   cpf: string;
   email: string;
-  phone: string;
-  balance: number;
-  createdAt: string;
+  telefone: string;
+  saldoInicial: number;
+  
 }
 
-export type NewClientData = Omit<Client, 'id' | 'createdAt'>;
+export type NewClientData = Omit<Client, 'id' | 'dataCadastro'>;
 
-export type UpdateClientData = Partial<Pick<Client, 'name' | 'email' | 'phone'>>;
+export type UpdateClientData = Partial<Pick<Client, 'nomeCompleto' | 'email' | 'telefone'>>;
 
 export interface Transaction {
   id: string;

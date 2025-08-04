@@ -25,7 +25,7 @@ const Dashboard: React.FC = () => {
 
     const stats = useMemo(() => {
         const totalClients = clients.length;
-        const totalBalance = clients.reduce((acc, client) => acc + client.balance, 0);
+        const totalBalance = clients.reduce((acc, client) => acc + client.saldoInicial, 0);
         return { totalClients, totalBalance };
     }, [clients]);
 

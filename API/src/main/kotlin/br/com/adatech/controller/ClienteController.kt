@@ -2,6 +2,7 @@ package br.com.adatech.controller
 
 import br.com.adatech.dto.ClienteRequestDTO
 import br.com.adatech.dto.ClienteResponseDTO
+import br.com.adatech.dto.ClienteUpdateRequestDTO
 import br.com.adatech.dto.DepositoRequestDTO
 import br.com.adatech.dto.DepositoResponseDTO
 import br.com.adatech.dto.SaldoResponseDTO
@@ -17,13 +18,13 @@ class ClienteController(
     private val clienteService: ClienteService
 ) {
 
-    @PostMapping
+    @PostMapping()
     fun cadastrarCliente(@Valid @RequestBody request: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {
         val cliente = clienteService.cadastrarCliente(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(cliente)
     }
 
-    @GetMapping
+    @GetMapping()
     fun listarTodosClientes(): ResponseEntity<List<ClienteResponseDTO>> {
         val clientes = clienteService.buscarTodosClientes()
         return ResponseEntity.ok(clientes)
@@ -39,6 +40,15 @@ class ClienteController(
     fun consultarSaldo(@PathVariable id: Long): ResponseEntity<SaldoResponseDTO> {
         val saldo = clienteService.consultarSaldo(id)
         return ResponseEntity.ok(saldo)
+    }
+
+    @PatchMapping("/{id}")
+    fun atualizarCliente(
+        @PathVariable id: Long,
+        @Valid @RequestBody updateDTO: ClienteUpdateRequestDTO
+    ): ResponseEntity<ClienteResponseDTO> {
+        val clienteAtualizado = clienteService.atualizarCliente(id, updateDTO)
+        return ResponseEntity.ok(clienteAtualizado)
     }
 
     @PatchMapping("/{id}/deposito")

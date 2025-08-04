@@ -48,7 +48,7 @@ const TransferForm: React.FC = () => {
         const numAmount = parseFloat(amount.replace(',', '.'));
         if (isNaN(numAmount) || numAmount <= 0) newErrors.amount = 'O valor deve ser um número positivo.';
 
-        if (fromClient && fromClient.balance < numAmount) {
+        if (fromClient && fromClient.saldoInicial < numAmount) {
             newErrors.amount = 'Saldo insuficiente para a transferência.';
         }
         
@@ -94,12 +94,12 @@ const TransferForm: React.FC = () => {
                             >
                                 <option value="">Selecione uma conta</option>
                                 {clients.map(client => (
-                                    <option key={client.id} value={client.id}>{client.name}</option>
+                                    <option key={client.id} value={client.id}>{client.nomeCompleto}</option>
                                 ))}
                             </select>
                             {fromClient && (
                                 <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
-                                    Saldo: <span className="font-semibold">{fromClient.balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                    Saldo: <span className="font-semibold">{fromClient.saldoInicial.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                 </div>
                             )}
                              {errors.from && <p className="mt-1 text-sm text-red-600">{errors.from}</p>}
@@ -127,12 +127,12 @@ const TransferForm: React.FC = () => {
                             >
                                 <option value="">Selecione uma conta</option>
                                 {clients.filter(c => c.id !== fromClientId).map(client => (
-                                    <option key={client.id} value={client.id}>{client.name}</option>
+                                    <option key={client.id} value={client.id}>{client.nomeCompleto}</option>
                                 ))}
                             </select>
                             {toClient && (
                                 <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
-                                    Cliente: <span className="font-semibold">{toClient.name}</span>
+                                    Cliente: <span className="font-semibold">{toClient.nomeCompleto}</span>
                                 </div>
                             )}
                              {errors.to && <p className="mt-1 text-sm text-red-600">{errors.to}</p>}

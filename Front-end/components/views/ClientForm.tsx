@@ -20,11 +20,11 @@ const ClientForm: React.FC<ClientFormProps> = ({ client: initialClient, onSucces
     const toastContext = useContext(ToastContext);
 
     const [formData, setFormData] = useState({
-        name: '',
+        nomeCompleto: '',
         cpf: '',
         email: '',
-        phone: '',
-        balance: '0',
+        telefone: '',
+        saldoInicial: '0',
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
@@ -38,22 +38,22 @@ const ClientForm: React.FC<ClientFormProps> = ({ client: initialClient, onSucces
             api.getClientById(id)
                 .then(data => {
                     setFormData({
-                        name: data.name,
+                        name: data.nomeCompleto,
                         cpf: data.cpf,
                         email: data.email,
-                        phone: data.phone,
-                        balance: String(data.balance)
+                        telefone: data.telefone,
+                        saldoInicial: String(data.saldoInicial)
                     });
                 })
                 .catch(err => toastContext?.showToast(err.message || 'Falha ao buscar cliente', 'error'))
                 .finally(() => setIsFetching(false));
         } else if (initialClient) {
              setFormData({
-                name: initialClient.name,
+                nomeCompleto: initialClient.nomeCompleto,
                 cpf: initialClient.cpf,
                 email: initialClient.email,
-                phone: initialClient.phone,
-                balance: String(initialClient.balance)
+                telefone: initialClient.telefone,
+                saldoInicial: String(initialClient.saldoInicial)
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,11 +66,11 @@ const ClientForm: React.FC<ClientFormProps> = ({ client: initialClient, onSucces
 
     const validate = (): boolean => {
         const newErrors: Record<string, string> = {};
-        if (!formData.name.trim()) newErrors.name = 'Nome completo é obrigatório';
-        if (!formData.cpf.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) newErrors.cpf = 'CPF inválido (use o formato XXX.XXX.XXX-XX)';
+        if (!formData.nomeCompleto.trim()) newErrors.nomeCompleto = 'Nome completo é obrigatório';
+       // if (!formData.cpf.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) newErrors.cpf = 'CPF inválido (use o formato XXX.XXX.XXX-XX)';
         if (!formData.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) newErrors.email = 'E-mail inválido';
-        if (!formData.phone.trim()) newErrors.phone = 'Telefone é obrigatório';
-        if (!isEditMode && parseFloat(formData.balance) < 0) newErrors.balance = 'Saldo inicial não pode ser negativo';
+        if (!formData.telefone.trim()) newErrors.telefone = 'Telefone é obrigatório';
+        if (!isEditMode && parseFloat(formData.saldoInicial) < 0) newErrors.saldoInicial = 'Saldo inicial não pode ser negativo';
         
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -84,16 +84,16 @@ const ClientForm: React.FC<ClientFormProps> = ({ client: initialClient, onSucces
         try {
             if (isEditMode) {
                 const updatedData: UpdateClientData = {
-                    name: formData.name,
+                    nomeCompleto: formData.nomeCompleto,
                     email: formData.email,
-                    phone: formData.phone
+                    telefone: formData.telefone
                 };
                 await api.updateClient(id!, updatedData);
                 toastContext?.showToast('Cliente atualizado com sucesso!', 'success');
             } else {
                 const newData: NewClientData = {
                     ...formData,
-                    balance: parseFloat(formData.balance),
+                    saldoInicial: parseFloat(formData.saldoInicial),
                 };
                 await api.createClient(newData);
                 toastContext?.showToast('Cliente criado com sucesso!', 'success');
@@ -118,12 +118,12 @@ const ClientForm: React.FC<ClientFormProps> = ({ client: initialClient, onSucces
                 {isEditMode ? 'Editar Cliente' : 'Novo Cliente'}
             </h1>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                <Input id="name" name="name" label="Nome Completo" value={formData.name} onChange={handleChange} error={errors.name} required />
+                <Input id="nomeCompleto" name="nomeCompleto" label="Nome Completo" value={formData.nomeCompleto} onChange={handleChange} error={errors.nomeCompleto} required />
                 <Input id="cpf" name="cpf" label="CPF" value={formData.cpf} onChange={handleChange} error={errors.cpf} required disabled={isEditMode} placeholder="123.456.789-00"/>
                 <Input id="email" name="email" type="email" label="E-mail" value={formData.email} onChange={handleChange} error={errors.email} required />
-                <Input id="phone" name="phone" type="tel" label="Telefone" value={formData.phone} onChange={handleChange} error={errors.phone} required />
+                <Input id="telefone" name="telefone" type="tel" label="Telefone" value={formData.telefone} onChange={handleChange} error={errors.telefone} required />
                 {!isEditMode && (
-                    <Input id="balance" name="balance" type="number" label="Saldo Inicial (R$)" value={formData.balance} onChange={handleChange} error={errors.balance} step="0.01" min="0" required />
+                    <Input id="saldoInicial" name="saldoInicial" type="number" label="Saldo Inicial (R$)" value={formData.saldoInicial} onChange={handleChange} error={errors.saldoInicial} step="0.01" min="0" required />
                 )}
                 <div className="flex justify-end pt-4">
                     <Button type="submit" isLoading={isLoading}>

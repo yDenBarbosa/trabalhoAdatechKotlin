@@ -2,6 +2,7 @@ package br.com.adatech.service
 
 import br.com.adatech.dto.ClienteRequestDTO
 import br.com.adatech.dto.ClienteResponseDTO
+import br.com.adatech.dto.ClienteUpdateRequestDTO
 import br.com.adatech.dto.DepositoResponseDTO
 import br.com.adatech.dto.SaldoResponseDTO
 import br.com.adatech.model.Cliente
@@ -42,12 +43,35 @@ class ClienteService(
     fun buscarTodosClientes(): List<ClienteResponseDTO> =
         clienteRepository.findAll().map { it.toResponseDTO() }
 
+    @Transactional()
+    fun atualizarCliente(id: Long, updateDTO: ClienteUpdateRequestDTO): ClienteResponseDTO {
+        val cliente = clienteRepository.findById(id)
+            .orElseThrow { NoSuchElementException("Cliente não encontrado com ID: $id") }
+
+        if (updateDTO.email != null && updateDTO.email != cliente.email) {
+            if (clienteRepository.existsByEmail(updateDTO.email)) {
+                throw IllegalArgumentException("E-mail já cadastrado no sistema")
+            }
+        }
+
+        val clienteAtualizado = cliente.copy(
+            id = cliente.id,
+            nomeCompleto = updateDTO.nomeCompleto ?: cliente.nomeCompleto,
+            email = updateDTO.email ?: cliente.email,
+            telefone = updateDTO.telefone ?: cliente.telefone
+        )
+
+        val salvo = clienteRepository.save(clienteAtualizado)
+        return salvo.toResponseDTO()
+    }
+
     @Transactional(readOnly = true)
     fun buscarClientePorId(id: Long): ClienteResponseDTO {
         val cliente = clienteRepository.findById(id)
             .orElseThrow { NoSuchElementException("Cliente não encontrado com ID: $id") }
         return cliente.toResponseDTO()
     }
+
 
     @Transactional(readOnly = true)
     fun consultarSaldo(id: Long): SaldoResponseDTO {
