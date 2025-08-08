@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface ClienteRepository : JpaRepository<Cliente, Long> {
     fun existsByCpf(cpf: String): Boolean
     fun existsByEmail(email: String): Boolean
+    fun findByCpf(cpf: String): Cliente?
 }
